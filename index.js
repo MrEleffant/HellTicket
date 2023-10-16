@@ -3,11 +3,11 @@ const puppeteer = require('puppeteer');
 const ligne = 2
 const colonne = 5
 
-const desiredHour = 21;
-const desiredMinute = 46;
+const desiredHour = 9;
+const desiredMinute = 27;
 
 
-async function openChromeWindow(url, index, j) {
+async function openChromeWindow(url, index, j, hour, minute) {
     const browser = await puppeteer.launch({
         headless: false,
         args: [
@@ -19,7 +19,18 @@ async function openChromeWindow(url, index, j) {
     });
 
     const page = await browser.newPage();
-    await page.goto(url);
+
+    const now = new Date();
+    const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    const timeUntilOpen = targetTime - now;
+    if (timeUntilOpen > 0) {
+        console.log(`Waiting for ${timeUntilOpen / 1000} seconds until ${hour}:${minute}...`);
+        await setTimeout(async() => {
+            await page.goto(url);
+        }, timeUntilOpen);
+    } else {
+        console.log('The specified time has already passed for today.');
+    }
 }
 
 const urls = [
@@ -27,13 +38,13 @@ const urls = [
     'https://tickets.hellfest.fr/#two',
 ];
 
-function openTabs() {
+function openTabs(hour, minute) {
     if (urls.length > 0) {
 
         for (let j = 0; j < ligne; j++) {
             for (let i = 0; i < colonne; i++) {
                 const urlToOpen = urls[i % urls.length];
-                openChromeWindow(urlToOpen, i, j);
+                openChromeWindow(urlToOpen, i, j, hour, minute);
             }
         }
 
@@ -42,21 +53,5 @@ function openTabs() {
     }
 }
 
-function openTabsAtSpecificHour(hour, minute) {
-    const now = new Date();
-    const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
-    const timeUntilOpen = targetTime - now;
 
-    if (timeUntilOpen > 0) {
-        console.log(`Waiting for ${timeUntilOpen / 1000} seconds until ${hour}:${minute}...`);
-        setTimeout(() => {
-            openTabs();
-        }, timeUntilOpen);
-    } else {
-        console.log('The specified time has already passed for today.');
-    }
-}
-
-openTabsAtSpecificHour(desiredHour, desiredMinute);
-// or
-// openTabs();
+openTabs(desiredHour, desiredMinute);
