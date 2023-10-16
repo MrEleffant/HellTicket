@@ -1,11 +1,7 @@
 const puppeteer = require('puppeteer');
-
+const heures = require("./SRC/heures.json")
 const ligne = 2
 const colonne = 5
-
-const desiredHour = 9;
-const desiredMinute = 27;
-
 
 async function openChromeWindow(url, index, j, hour, minute) {
     const browser = await puppeteer.launch({
@@ -54,4 +50,4 @@ function openTabs(hour, minute) {
 }
 
 
-openTabs(desiredHour, desiredMinute);
+openTabs(heures.heure, heures.minute);
