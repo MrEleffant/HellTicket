@@ -1,11 +1,13 @@
-const puppeteer = require('puppeteer');
-const heures = require("./SRC/heures.json")
-const ligne = 2
-const colonne = 5
+const puppeteer = require('puppeteer')
+const UserAgent = require('user-agents')
+const config = require("./SRC/config.json")
+const ligne = config.settings.ligne
+const colonne = config.settings.colonne
 
 async function openChromeWindow(url, index, j, hour, minute, seconde, ms) {
     const browser = await puppeteer.launch({
         headless: false,
+        dumpio: true, // chromium degub in console
         args: [
             `--window-position=${index * 500},${j * 500}`,
             `--window-size=200,600`,
@@ -15,6 +17,11 @@ async function openChromeWindow(url, index, j, hour, minute, seconde, ms) {
     });
 
     const page = await browser.newPage();
+    const user = new UserAgent()
+    await page.setUserAgent(user.toString())
+
+    page.goto("https://intoli.com/blog/making-chrome-headless-undetectable/chrome-headless-test.html")
+
 
     const now = new Date();
     const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, seconde, ms);
@@ -31,10 +38,7 @@ async function openChromeWindow(url, index, j, hour, minute, seconde, ms) {
     }
 }
 
-const urls = [
-    'https://tickets.hellfest.fr/#one',
-    'https://tickets.hellfest.fr/#two',
-];
+const urls = config.settings.urls
 
 function openTabs(hour, minute, seconde, ms) {
     if (urls.length > 0) {
@@ -52,4 +56,4 @@ function openTabs(hour, minute, seconde, ms) {
 }
 
 
-openTabs(heures.heure, heures.minute, heures.seconde, heures.ms);
+openTabs(config.heures.heure, config.heures.minute, config.heures.seconde, config.heures.ms);

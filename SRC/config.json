@@ -1,0 +1,17 @@
+{
+    "heures": {
+        "heure": 17,
+        "minute": 0,
+        "seconde": 0,
+        "ms": 0
+    },
+    "settings": {
+        "ligne": 1,
+        "colonne": 4,
+        "urls":[
+            "https://tickets.hellfest.fr/#one",
+            "https://tickets.hellfest.fr/#two"
+        ]
+    }
+
+}
