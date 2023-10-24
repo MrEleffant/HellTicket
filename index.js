@@ -18,6 +18,7 @@ async function openChromeWindow(url, index, j, hour, minute, seconde, ms) {
 
     const page = await browser.newPage();
     const user = new UserAgent()
+    await page.setDefaultNavigationTimeout(0); 
     await page.setUserAgent(user.toString())
 
     page.goto("https://intoli.com/blog/making-chrome-headless-undetectable/chrome-headless-test.html")
